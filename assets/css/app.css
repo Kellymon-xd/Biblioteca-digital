@@ -17,3 +17,15 @@ body { background: #f8f9fa; }
   color: #6c757d;
   font-size: 3rem;
 }
+
+#wrapper.sidebar-collapsed #sidebar {
+  margin-left: -230px;
+}
+
+#sidebar {
+  transition: margin-left 0.3s ease;
+}
+
+#wrapper.sidebar-collapsed #page-content-wrapper {
+  width: 100%;
+}
