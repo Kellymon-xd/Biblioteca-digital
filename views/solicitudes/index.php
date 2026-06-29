@@ -49,6 +49,7 @@ require_once SRC_PATH . '/views/layout/header.php';
                 <th>Autor</th>
                 <th>Área</th>
                 <th>Estudiante</th>
+                <th>Fecha de creación</th>
                 <th class="text-center">Estado</th>
                 <th>Observaciones</th>
                 <th class="text-end">Responder</th>
@@ -77,6 +78,10 @@ require_once SRC_PATH . '/views/layout/header.php';
                     <div class="small text-muted">
                       <?= Sanitizador::html($solicitud['cip'] ?? '') ?>
                     </div>
+                  </td>
+
+                  <td>
+                    <?= !empty($solicitud['created_at']) ? date('d/m/Y H:i', strtotime($solicitud['created_at'])) : '' ?>
                   </td>
 
                   <td class="text-center">
