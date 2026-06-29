@@ -170,34 +170,55 @@ class LibroController
 
     private function generarThumbnail(string $origen, string $destino, string $ext): void
     {
+        if (!extension_loaded('gd')) {
+            throw new RuntimeException('La extensión GD no está habilitada en PHP. Actívala en php.ini.');
+        }
+
         $src = match ($ext) {
-            'jpg', 'jpeg' => imagecreatefromjpeg($origen),
-            'png' => imagecreatefrompng($origen),
-            'webp' => imagecreatefromwebp($origen),
+            'jpg', 'jpeg' => function_exists('imagecreatefromjpeg') ? imagecreatefromjpeg($origen) : null,
+            'png' => function_exists('imagecreatefrompng') ? imagecreatefrompng($origen) : null,
+            'webp' => function_exists('imagecreatefromwebp') ? imagecreatefromwebp($origen) : null,
             default => null,
         };
-        if (!$src)
-            return;
 
-        [$w, $h] = getimagesize($origen);
+        if (!$src) {
+            throw new RuntimeException('PHP no pudo procesar la imagen. Verifica que GD esté habilitada y soporte este formato.');
+        }
+
+        $size = getimagesize($origen);
+        if (!$size) {
+            imagedestroy($src);
+            throw new RuntimeException('No se pudo obtener el tamaño de la imagen.');
+        }
+
+        [$w, $h] = $size;
+
         $ratio = min(THUMB_WIDTH / $w, THUMB_HEIGHT / $h);
         $nw = (int) ($w * $ratio);
         $nh = (int) ($h * $ratio);
+
         $thumb = imagecreatetruecolor(THUMB_WIDTH, THUMB_HEIGHT);
         $blanco = imagecolorallocate($thumb, 255, 255, 255);
         imagefill($thumb, 0, 0, $blanco);
+
         $ox = (int) ((THUMB_WIDTH - $nw) / 2);
         $oy = (int) ((THUMB_HEIGHT - $nh) / 2);
+
         imagecopyresampled($thumb, $src, $ox, $oy, 0, 0, $nw, $nh, $w, $h);
 
-        match ($ext) {
-            'jpg', 'jpeg' => imagejpeg($thumb, $destino, 85),
-            'png' => imagepng($thumb, $destino),
-            'webp' => imagewebp($thumb, $destino, 85),
-            default => null,
+        $guardado = match ($ext) {
+            'jpg', 'jpeg' => function_exists('imagejpeg') ? imagejpeg($thumb, $destino, 85) : false,
+            'png' => function_exists('imagepng') ? imagepng($thumb, $destino) : false,
+            'webp' => function_exists('imagewebp') ? imagewebp($thumb, $destino, 85) : false,
+            default => false,
         };
+
         imagedestroy($src);
         imagedestroy($thumb);
+
+        if (!$guardado) {
+            throw new RuntimeException('No se pudo generar el thumbnail.');
+        }
     }
 
     public function eliminar(): void
