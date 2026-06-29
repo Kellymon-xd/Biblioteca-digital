@@ -106,6 +106,11 @@ CREATE TABLE login_logs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='Bitácora de intentos de acceso al sistema';
 
+ALTER TABLE login_logs
+ADD COLUMN tipo_actor VARCHAR(20) NULL AFTER id_usuario,
+ADD COLUMN id_estudiante INT NULL AFTER tipo_actor,
+ADD COLUMN identificador VARCHAR(100) NULL AFTER id_estudiante;
+
 -- ============================================================
 -- 5. TABLA: estudiantes
 -- ============================================================

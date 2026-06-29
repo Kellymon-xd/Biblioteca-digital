@@ -69,21 +69,34 @@ class AuthModel
     /** Guarda un registro en login_logs */
     public function registrarLog(
         string $accion,
-        string $username,
+        string $identificador,
         string $descripcion,
-        ?int   $idUsuario = null
+        ?int $idUsuario = null,
+        ?int $idEstudiante = null,
+        string $tipoActor = 'usuario'
     ): void {
         $stmt = $this->pdo->prepare(
-            'INSERT INTO login_logs (username, ip_address, user_agent, accion, descripcion, id_usuario)
-             VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO login_logs (
+            username,
+            ip_address,
+            user_agent,
+            accion,
+            descripcion,
+            id_usuario,
+            id_estudiante,
+            tipo_actor
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         );
+
         $stmt->execute([
-            $username,
-            $_SERVER['REMOTE_ADDR']     ?? 'desconocida',
+            $identificador,
+            $_SERVER['REMOTE_ADDR'] ?? 'desconocida',
             $_SERVER['HTTP_USER_AGENT'] ?? '',
             $accion,
             $descripcion,
             $idUsuario,
+            $idEstudiante,
+            $tipoActor,
         ]);
     }
 
