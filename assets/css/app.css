@@ -1,0 +1,19 @@
+body { background: #f8f9fa; }
+#wrapper { min-height: 100vh; }
+#page-content-wrapper { min-height: 100vh; }
+.sidebar { min-width: 250px; background: #212529; }
+.sidebar .nav-link.active { background: rgba(255,255,255,.1); }
+
+.book-card { overflow: hidden; }
+.book-thumb {
+  width: 100%;
+  aspect-ratio: 11 / 15;
+  object-fit: cover;
+  background: #eef2f7;
+}
+.book-thumb-empty {
+  display: grid;
+  place-items: center;
+  color: #6c757d;
+  font-size: 3rem;
+}
