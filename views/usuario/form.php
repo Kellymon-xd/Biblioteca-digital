@@ -44,7 +44,7 @@ $id = $usuario['id_usuario'] ?? 0;
         <div class="col-md-6">
           <label class="form-label fw-semibold">Rol</label>
           <select name="rol" class="form-select">
-            <?php foreach (['admin','bibliotecario','operador'] as $r): ?>
+            <?php foreach (['administrador','operador'] as $r): ?>
             <option value="<?=$r?>" <?=($usuario['rol']??'operador')===$r?'selected':''?>><?=ucfirst($r)?></option>
             <?php endforeach; ?>
           </select>

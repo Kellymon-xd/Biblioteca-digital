@@ -66,7 +66,7 @@ CREATE TABLE usuarios (
     email               VARCHAR(255)    NOT NULL,
     username            VARCHAR(50)     NOT NULL,
     password_hash       VARCHAR(255)    NOT NULL COMMENT 'bcrypt cost>=12',
-    rol                 ENUM('admin','bibliotecario','operador')
+    rol                 ENUM('administrador','operador')
                                         NOT NULL DEFAULT 'operador',
     activo              TINYINT(1)      NOT NULL DEFAULT 1,
     intentos_fallidos   TINYINT(1)      NOT NULL DEFAULT 0,

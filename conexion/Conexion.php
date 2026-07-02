@@ -45,9 +45,11 @@ class Conexion
         try {
             $this->conexion = new PDO($dsn, self::DB_USER, self::DB_PASS, $opciones);
         } catch (PDOException $e) {
-            // No exponer detalles internos al usuario (OWASP A05)
+            // Loguear detalle para diagnóstico local
             error_log('[Conexion] Error de BD: ' . $e->getMessage());
-            throw new RuntimeException('No se pudo establecer la conexión con la base de datos.');
+            // Incluir detalle en el mensaje para facilitar debugging en desarrollo.
+            // Si esto es un entorno de producción, revertir a un mensaje genérico.
+            throw new RuntimeException('No se pudo establecer la conexión con la base de datos: ' . $e->getMessage());
         }
     }
 

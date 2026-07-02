@@ -43,6 +43,22 @@ class UsuarioController
             'password' => 'texto',
         ]);
 
+        // Roles permitidos en la aplicación
+        $rolesPermitidos = ['administrador', 'operador'];
+
+        // Validar que el rol enviado sea uno permitido
+        if (!in_array($d['rol'], $rolesPermitidos, true)) {
+            ErrorHandler::agregarMensaje('danger', 'Rol inválido.');
+            Sanitizador::guardarViejosDatos(['id' => $id] + $d);
+            ErrorHandler::redirigir('usuarios', 'form', $id ? ['id' => $id] : []);
+        }
+
+        // Solo administradores pueden crear nuevos usuarios
+        if (!$id && (!isset($_SESSION['usuario']['rol']) || $_SESSION['usuario']['rol'] !== 'administrador')) {
+            ErrorHandler::agregarMensaje('danger', 'No tienes permiso para crear usuarios.');
+            ErrorHandler::redirigir('usuarios');
+        }
+
         $this->val->limpiar();
         $this->val->requerido('nombre', $d['nombre'])
             ->requerido('apellido', $d['apellido'])

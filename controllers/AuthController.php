@@ -64,11 +64,20 @@ class AuthController
         }
 
         session_regenerate_id(true);
+        // Normalizar roles históricos a los permitidos: 'administrador' y 'operador'
+        $rol = $usuario['rol'];
+        if ($rol === 'admin') {
+            $rol = 'administrador';
+        } elseif ($rol === 'bibliotecario') {
+            // Mapear 'bibliotecario' a 'operador' para mantener compatibilidad
+            $rol = 'operador';
+        }
+
         $_SESSION['usuario'] = [
             'id_usuario' => (int)$usuario['id_usuario'],
             'nombre'     => $usuario['nombre'] . ' ' . $usuario['apellido'],
             'username'   => $usuario['username'],
-            'rol'        => $usuario['rol'],
+            'rol'        => $rol,
         ];
 
         $this->modelo->registrarLoginExitoso((int)$usuario['id_usuario']);
