@@ -52,7 +52,7 @@ function menuActivo(string $mod): string {
         <i class="bi bi-building-check me-2"></i>Carreras
       </a>
     </li>
-    <?php if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === 'administrador'): ?>
+    <?php if (isset($_SESSION['usuario']['rol']) && normalizarRol((string) $_SESSION['usuario']['rol'], (string) ($_SESSION['usuario']['username'] ?? '')) === 'administrador'): ?>
     <li class="nav-item mt-2">
       <small class="text-secondary px-3">ADMINISTRACIÓN</small>
     </li>

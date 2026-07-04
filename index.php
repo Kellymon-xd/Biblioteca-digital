@@ -36,6 +36,9 @@ switch ($mod) {
     case 'portal':
         $controller = new PortalController();
         break;
+    case 'api':
+        $controller = new ApiController();
+        break;
     default:
         http_response_code(404);
         require_once SRC_PATH . '/views/error404.php';

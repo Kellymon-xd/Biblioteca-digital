@@ -53,8 +53,13 @@ class UsuarioController
             ErrorHandler::redirigir('usuarios', 'form', $id ? ['id' => $id] : []);
         }
 
+        $rolActual = normalizarRol(
+            (string) ($_SESSION['usuario']['rol'] ?? ''),
+            (string) ($_SESSION['usuario']['username'] ?? '')
+        );
+
         // Solo administradores pueden crear nuevos usuarios
-        if (!$id && (!isset($_SESSION['usuario']['rol']) || $_SESSION['usuario']['rol'] !== 'administrador')) {
+        if (!$id && $rolActual !== 'administrador') {
             ErrorHandler::agregarMensaje('danger', 'No tienes permiso para crear usuarios.');
             ErrorHandler::redirigir('usuarios');
         }

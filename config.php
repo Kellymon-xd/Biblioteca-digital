@@ -25,6 +25,24 @@ if (!defined('APP_SECRET')) {
     define('APP_SECRET', 'biblioteca-digital-cambiar-en-produccion-2026');
 }
 
+if (!function_exists('normalizarRol')) {
+    function normalizarRol(string $rol, string $username = ''): string
+    {
+        $rol = strtolower(trim($rol));
+        $username = strtolower(trim($username));
+
+        if ($rol === '') {
+            return $username === 'admin' ? 'administrador' : 'operador';
+        }
+
+        return match ($rol) {
+            'admin', 'administrador' => 'administrador',
+            'bibliotecario', 'operador' => 'operador',
+            default => $rol,
+        };
+    }
+}
+
 if (!defined('UPLOADS_PATH')) {
     define('UPLOADS_PATH', __DIR__ . '/uploads');
 }
@@ -42,6 +60,13 @@ if (!defined('THUMB_HEIGHT')) {
 }
 
 session_start();
+
+if (!empty($_SESSION['usuario'])) {
+    $_SESSION['usuario']['rol'] = normalizarRol(
+        (string) ($_SESSION['usuario']['rol'] ?? ''),
+        (string) ($_SESSION['usuario']['username'] ?? '')
+    );
+}
 
 foreach ([UPLOADS_PATH, UPLOADS_PATH . '/libros', UPLOADS_PATH . '/libros/orig', UPLOADS_PATH . '/libros/thumb'] as $dir) {
     if (!is_dir($dir)) {
@@ -76,4 +101,5 @@ require_once SRC_PATH . '/controllers/PortalController.php';
 require_once SRC_PATH . '/controllers/ReservaController.php';
 require_once SRC_PATH . '/controllers/SolicitudController.php';
 require_once SRC_PATH . '/controllers/UsuarioController.php';
+require_once SRC_PATH . '/controllers/ApiController.php';
 require_once SRC_PATH . '/views/DashboardController.php';
