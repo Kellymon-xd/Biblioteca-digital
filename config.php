@@ -41,11 +41,13 @@ if (!function_exists('appEsHttps')) {
 if (!defined('BASE_URL')) {
     $urlConfigurada = trim((string) Env::get('APP_URL', ''));
 
-    if ($urlConfigurada !== '') {
+    if ($urlConfigurada !== '' && strtolower($urlConfigurada) !== 'auto') {
         define('BASE_URL', rtrim($urlConfigurada, '/'));
     } else {
-        $root = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/\\');
-        define('BASE_URL', $root === '' ? '/' : $root);
+        $script = $_SERVER['SCRIPT_NAME'] ?? '';
+        $root = rtrim(str_replace('\\', '/', dirname($script)), '/');
+
+        define('BASE_URL', ($root === '' || $root === '.' || $root === '/') ? '' : $root);
     }
 }
 
