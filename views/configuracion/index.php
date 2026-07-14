@@ -21,10 +21,6 @@ require_once SRC_PATH . '/views/layout/header.php';
           <label class="form-label">Días para profesores</label>
           <input type="number" min="1" max="365" name="dias_prestamo_profesor" class="form-control" value="<?= (int)$diasProfesor ?>">
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Días para administrativos</label>
-          <input type="number" min="1" max="365" name="dias_prestamo_administrativo" class="form-control" value="<?= (int)$diasAdministrativo ?>">
-        </div>
         <div class="col-12">
           <button class="btn btn-primary"><i class="bi bi-save me-1"></i>Guardar configuración</button>
         </div>
