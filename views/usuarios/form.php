@@ -2,12 +2,11 @@
 $tituloPagina = empty($usuario) ? 'Nuevo Usuario' : 'Editar Usuario';
 require_once SRC_PATH . '/views/layout/header.php';
 $id = $usuario['id_usuario'] ?? 0;
+$old = Sanitizador::obtenerViejosDatos();
 ?>
 <div class="container py-4">
-  <?php require_once SRC_PATH . '/views/layout/flash.php'; ?>
-  <?php $old = Sanitizador::obtenerViejosDatos(); ?>
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0"><?= $tituloPagina ?></h1>
+    <h1 class="h3 mb-0"><?= Sanitizador::html($tituloPagina) ?></h1>
     <a href="<?= BASE_URL ?>/index.php?mod=usuarios" class="btn btn-secondary">Volver</a>
   </div>
   <div class="card border-0 shadow-sm">
@@ -37,12 +36,16 @@ $id = $usuario['id_usuario'] ?? 0;
             <input type="password" name="password" class="form-control" placeholder="<?= $id ? 'Dejar vacío para mantener' : '8–12 caracteres' ?>" <?= $id ? '' : 'required' ?> minlength="8" maxlength="12">
           </div>
           <div class="col-md-6">
-            <label class="form-label">Rol</label>
-            <select name="rol" class="form-select">
-              <?php foreach (['administrador','operador'] as $rol): ?>
-                <option value="<?= $rol ?>" <?= ($old['rol'] ?? $usuario['rol'] ?? 'operador') === $rol ? 'selected' : '' ?>><?= ucfirst($rol) ?></option>
+            <label class="form-label">Rol / alcance</label>
+            <select name="id_rol" class="form-select" required>
+              <option value="">Seleccione...</option>
+              <?php foreach ($roles as $rol): ?>
+                <option value="<?= (int)$rol['id_rol'] ?>" <?= (int)($old['id_rol'] ?? $usuario['id_rol'] ?? 0) === (int)$rol['id_rol'] ? 'selected' : '' ?>>
+                  <?= Sanitizador::html($rol['nombre']) ?>
+                </option>
               <?php endforeach; ?>
             </select>
+            <div class="form-text">El rol define a qué módulos puede entrar este usuario.</div>
           </div>
           <?php if ($id): ?>
             <div class="col-12">

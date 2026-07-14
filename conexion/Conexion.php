@@ -1,87 +1,88 @@
 <?php
 /**
  * Conexion.php
- * 
+ *
  * Clase de conexión a la base de datos mediante PDO.
- * Principios aplicados: Singleton (una sola instancia), SRP (única responsabilidad),
- * DRY (configuración centralizada), OWASP (modo excepción activado).
- * 
- * USUARIO DE BD: bib_app — solo tiene SELECT, INSERT, UPDATE, DELETE
- *                No usa root en producción.
+ * La configuración se toma desde .env cuando existe y mantiene valores por defecto
+ * para que el proyecto también funcione en XAMPP sin configuración adicional.
  */
 
 declare(strict_types=1);
 
+if (!class_exists('Env')) {
+    require_once dirname(__DIR__) . '/utilidades/Env.php';
+}
+
+Env::load(dirname(__DIR__) . '/.env');
+
 class Conexion
 {
-    // ── Configuración de la base de datos ─────────────────────────────────────
-    private const DB_HOST    = 'localhost';
-    private const DB_NAME    = 'biblioteca_digital';
-    private const DB_USER    = 'bib_app';               // Usuario dedicado (no root)
-    private const DB_PASS    = 'B!bl10t3c@_S3cur3#2025';
-    private const DB_CHARSET = 'utf8mb4';
-
-    // ── Singleton ─────────────────────────────────────────────────────────────
     private static ?Conexion $instancia = null;
     private PDO $conexion;
 
-    // ── Constructor privado (patrón Singleton) ────────────────────────────────
     private function __construct()
     {
+        $host = (string) Env::get('DB_HOST', 'localhost');
+        $port = Env::int('DB_PORT', 3306);
+        $name = (string) Env::get('DB_NAME', 'biblioteca_digital');
+        $user = (string) Env::get('DB_USER', 'bib_app');
+        $pass = (string) Env::get('DB_PASS', 'B!bl10t3c@_S3cur3#2025');
+        $charset = (string) Env::get('DB_CHARSET', 'utf8mb4');
+
         $dsn = sprintf(
-            'mysql:host=%s;dbname=%s;charset=%s',
-            self::DB_HOST,
-            self::DB_NAME,
-            self::DB_CHARSET
+            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
+            $host,
+            $port,
+            $name,
+            $charset
         );
 
         $opciones = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // Lanza excepciones
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,        // Retorna arrays asociativos
-            PDO::ATTR_EMULATE_PREPARES   => false,                    // Prepared statements reales
-            PDO::MYSQL_ATTR_FOUND_ROWS   => true,                     // UPDATE devuelve filas encontradas
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::MYSQL_ATTR_FOUND_ROWS   => true,
         ];
 
         try {
-            $this->conexion = new PDO($dsn, self::DB_USER, self::DB_PASS, $opciones);
+            $this->conexion = new PDO($dsn, $user, $pass, $opciones);
         } catch (PDOException $e) {
-            // Loguear detalle para diagnóstico local
             error_log('[Conexion] Error de BD: ' . $e->getMessage());
-            // Incluir detalle en el mensaje para facilitar debugging en desarrollo.
-            // Si esto es un entorno de producción, revertir a un mensaje genérico.
-            throw new RuntimeException('No se pudo establecer la conexión con la base de datos: ' . $e->getMessage());
+
+            if (Env::bool('APP_DEBUG', true)) {
+                throw new RuntimeException('No se pudo establecer la conexión con la base de datos: ' . $e->getMessage());
+            }
+
+            throw new RuntimeException('No se pudo establecer la conexión con la base de datos.');
         }
     }
 
-    // Evitar clonación y deserialización (Singleton seguro)
     private function __clone() {}
+
     public function __wakeup(): void
     {
         throw new RuntimeException('No se puede deserializar un Singleton.');
     }
 
-    // ── Obtener instancia única ───────────────────────────────────────────────
     public static function obtenerInstancia(): self
     {
         if (self::$instancia === null) {
             self::$instancia = new self();
         }
+
         return self::$instancia;
     }
 
-    // ── Obtener objeto PDO ────────────────────────────────────────────────────
     public function getConexion(): PDO
     {
         return $this->conexion;
     }
 
-    // ── Método de conveniencia: preparar sentencia ────────────────────────────
-    public function preparar(string $sql): \PDOStatement
+    public function preparar(string $sql): PDOStatement
     {
         return $this->conexion->prepare($sql);
     }
 
-    // ── Transacciones ─────────────────────────────────────────────────────────
     public function iniciarTransaccion(): void
     {
         $this->conexion->beginTransaction();
@@ -97,7 +98,6 @@ class Conexion
         $this->conexion->rollBack();
     }
 
-    // ── Último ID insertado ───────────────────────────────────────────────────
     public function ultimoId(): string
     {
         return $this->conexion->lastInsertId();

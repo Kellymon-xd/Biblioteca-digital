@@ -1,14 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 class UsuarioController
 {
     private UsuarioModel $modelo;
+    private RolModel $roles;
     private Validador $val;
 
     public function __construct()
     {
         $this->modelo = new UsuarioModel();
+        $this->roles = new RolModel();
         $this->val = new Validador();
     }
 
@@ -26,6 +29,7 @@ class UsuarioController
     {
         $id = Sanitizador::entero($_GET['id'] ?? 0);
         $usuario = $id ? $this->modelo->obtenerPorId($id) : [];
+        $roles = $this->roles->obtenerTodosActivos();
         require_once SRC_PATH . '/views/usuarios/form.php';
     }
 
@@ -38,27 +42,17 @@ class UsuarioController
             'apellido' => 'nombre',
             'email' => 'email',
             'username' => 'texto',
-            'rol' => 'texto',
+            'id_rol' => 'int',
             'activo' => 'int',
             'password' => 'texto',
         ]);
-
-        // Roles permitidos en la aplicación
-        $rolesPermitidos = ['administrador', 'operador'];
-
-        // Validar que el rol enviado sea uno permitido
-        if (!in_array($d['rol'], $rolesPermitidos, true)) {
-            ErrorHandler::agregarMensaje('danger', 'Rol inválido.');
-            Sanitizador::guardarViejosDatos(['id' => $id] + $d);
-            ErrorHandler::redirigir('usuarios', 'form', $id ? ['id' => $id] : []);
-        }
+        $d['activo'] = isset($_POST['activo']) || !$id ? 1 : 0;
 
         $rolActual = normalizarRol(
             (string) ($_SESSION['usuario']['rol'] ?? ''),
             (string) ($_SESSION['usuario']['username'] ?? '')
         );
 
-        // Solo administradores pueden crear nuevos usuarios
         if (!$id && $rolActual !== 'administrador') {
             ErrorHandler::agregarMensaje('danger', 'No tienes permiso para crear usuarios.');
             ErrorHandler::redirigir('usuarios');
@@ -69,11 +63,11 @@ class UsuarioController
             ->requerido('apellido', $d['apellido'])
             ->requerido('email', $d['email'])
             ->email('email', $d['email'])
-            ->requerido('username', $d['username']);
+            ->requerido('username', $d['username'])
+            ->enteroPositivo('id_rol', $d['id_rol']);
 
         if (!$id) {
             $this->val->requerido('password', $d['password']);
-
             if (!empty($d['password'])) {
                 $this->val->contrasena('password', $d['password']);
             }
@@ -100,33 +94,16 @@ class UsuarioController
             ErrorHandler::redirigir('usuarios', 'form', $id ? ['id' => $id] : []);
         }
 
-        if ($id) {
-            try {
-                $ok = $this->modelo->actualizar($id, $d);
-                $msg = $ok ? 'Usuario actualizado correctamente.' : 'Error al actualizar.';
-            } catch (Throwable $e) {
-                error_log('[UsuarioController::guardar] ' . $e->getMessage());
-                Sanitizador::guardarViejosDatos(['id' => $id] + $d);
-                ErrorHandler::agregarMensaje('danger', 'No se pudo actualizar el usuario. Verifica que los datos no estén duplicados.');
-                ErrorHandler::redirigir('usuarios', 'form', ['id' => $id]);
-            }
-        } else {
-            try {
-                $ok = $this->modelo->insertar($d);
-                $msg = $ok ? 'Usuario creado correctamente.' : 'Error al crear.';
-            } catch (Throwable $e) {
-                error_log('[UsuarioController::guardar] ' . $e->getMessage());
-                Sanitizador::guardarViejosDatos(['id' => $id] + $d);
-                ErrorHandler::agregarMensaje('danger', 'No se pudo crear el usuario. Verifica que los datos no estén duplicados.');
-                ErrorHandler::redirigir('usuarios', 'form');
-            }
-        }
-        if (!$ok) {
+        try {
+            $ok = $id ? $this->modelo->actualizar($id, $d) : $this->modelo->insertar($d);
+        } catch (Throwable $e) {
+            error_log('[UsuarioController::guardar] ' . $e->getMessage());
             Sanitizador::guardarViejosDatos(['id' => $id] + $d);
-            ErrorHandler::agregarMensaje('danger', $msg);
+            ErrorHandler::agregarMensaje('danger', 'No se pudo guardar el usuario. Verifica que los datos no estén duplicados.');
             ErrorHandler::redirigir('usuarios', 'form', $id ? ['id' => $id] : []);
         }
-        ErrorHandler::agregarMensaje($ok ? 'success' : 'danger', $msg);
+
+        ErrorHandler::agregarMensaje($ok ? 'success' : 'danger', $ok ? 'Usuario guardado correctamente.' : 'Error al guardar.');
         ErrorHandler::redirigir('usuarios');
     }
 

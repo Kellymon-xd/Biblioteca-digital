@@ -1,34 +1,40 @@
 <?php
+
 declare(strict_types=1);
 
 class UsuarioModel implements IRepositorio
 {
     private PDO $pdo;
+    private HashPasswordService $passwords;
 
     public function __construct()
     {
         $this->pdo = Conexion::obtenerInstancia()->getConexion();
+        $this->passwords = new HashPasswordService();
     }
 
     public function obtenerTodos(int $pagina = 1, string $busqueda = ''): array
     {
         $offset = ($pagina - 1) * POR_PAGINA;
-        $like   = "%$busqueda%";
-        $stmt   = $this->pdo->prepare(
-            'SELECT id_usuario, nombre, apellido, email, username, rol, activo, bloqueado, ultimo_login
-             FROM   usuarios
-             WHERE  nombre LIKE ? OR apellido LIKE ? OR email LIKE ? OR username LIKE ?
-             ORDER  BY nombre ASC
-             LIMIT  ? OFFSET ?'
+        $like = "%$busqueda%";
+        $stmt = $this->pdo->prepare(
+            'SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.username, u.rol, u.id_rol,
+                    COALESCE(r.nombre, u.rol) AS rol_nombre, u.activo, u.bloqueado, u.ultimo_login
+             FROM usuarios u
+             LEFT JOIN roles r ON r.id_rol = u.id_rol
+             WHERE u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.username LIKE ? OR COALESCE(r.nombre,u.rol) LIKE ?
+             ORDER BY u.nombre ASC
+             LIMIT ? OFFSET ?'
         );
-        $stmt->execute([$like, $like, $like, $like, POR_PAGINA, $offset]);
+        $stmt->execute([$like, $like, $like, $like, $like, POR_PAGINA, $offset]);
         return $stmt->fetchAll();
     }
 
     public function obtenerPorId(int $id): array|false
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id_usuario, nombre, apellido, email, username, rol, activo FROM usuarios WHERE id_usuario = ?'
+            'SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.username, u.rol, u.id_rol, u.activo
+             FROM usuarios u WHERE u.id_usuario = ?'
         );
         $stmt->execute([$id]);
         return $stmt->fetch();
@@ -36,35 +42,58 @@ class UsuarioModel implements IRepositorio
 
     public function insertar(array $d): int|false
     {
-        $hash = password_hash($d['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+        $hash = $this->passwords->generar($d['password']);
+        $rolTexto = $this->rolTextoDesdeId((int)($d['id_rol'] ?? 0));
         $stmt = $this->pdo->prepare(
-            'INSERT INTO usuarios (nombre, apellido, email, username, password_hash, rol)
-             VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO usuarios (nombre, apellido, email, username, password_hash, rol, id_rol, activo)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         );
-        $ok = $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $d['username'], $hash, $d['rol']]);
+        $ok = $stmt->execute([
+            $d['nombre'],
+            $d['apellido'],
+            $d['email'],
+            $d['username'],
+            $hash,
+            $rolTexto,
+            $d['id_rol'] ?: null,
+            (int)($d['activo'] ?? 1),
+        ]);
         return $ok ? (int)$this->pdo->lastInsertId() : false;
     }
 
     public function actualizar(int $id, array $d): bool
     {
-        // Si viene contraseña nueva, se actualiza; si no, se deja igual
+        $rolTexto = $this->rolTextoDesdeId((int)($d['id_rol'] ?? 0));
         if (!empty($d['password'])) {
-            $hash = password_hash($d['password'], PASSWORD_BCRYPT, ['cost' => 12]);
+            $hash = $this->passwords->generar($d['password']);
             $stmt = $this->pdo->prepare(
-                'UPDATE usuarios SET nombre=?, apellido=?, email=?, username=?, password_hash=?, rol=?, activo=?
+                'UPDATE usuarios SET nombre=?, apellido=?, email=?, username=?, password_hash=?, rol=?, id_rol=?, activo=?
                  WHERE id_usuario=?'
             );
-            return $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $d['username'], $hash, $d['rol'], $d['activo'], $id]);
+            return $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $d['username'], $hash, $rolTexto, $d['id_rol'] ?: null, $d['activo'], $id]);
         }
         $stmt = $this->pdo->prepare(
-            'UPDATE usuarios SET nombre=?, apellido=?, email=?, username=?, rol=?, activo=? WHERE id_usuario=?'
+            'UPDATE usuarios SET nombre=?, apellido=?, email=?, username=?, rol=?, id_rol=?, activo=? WHERE id_usuario=?'
         );
-        return $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $d['username'], $d['rol'], $d['activo'], $id]);
+        return $stmt->execute([$d['nombre'], $d['apellido'], $d['email'], $d['username'], $rolTexto, $d['id_rol'] ?: null, $d['activo'], $id]);
+    }
+
+    private function rolTextoDesdeId(int $idRol): string
+    {
+        if ($idRol <= 0) {
+            return 'operador';
+        }
+        $stmt = $this->pdo->prepare('SELECT nombre, modulos FROM roles WHERE id_rol=? LIMIT 1');
+        $stmt->execute([$idRol]);
+        $rol = $stmt->fetch();
+        if (!$rol) {
+            return 'operador';
+        }
+        return ((string)($rol['modulos'] ?? '') === '*') ? 'administrador' : 'operador';
     }
 
     public function eliminar(int $id): bool
     {
-        // Baja lógica — nunca borramos usuarios (auditoría)
         $stmt = $this->pdo->prepare('UPDATE usuarios SET activo = 0 WHERE id_usuario = ?');
         return $stmt->execute([$id]);
     }
@@ -73,9 +102,11 @@ class UsuarioModel implements IRepositorio
     {
         $like = "%$busqueda%";
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM usuarios WHERE nombre LIKE ? OR apellido LIKE ? OR email LIKE ? OR username LIKE ?'
+            'SELECT COUNT(*)
+             FROM usuarios u LEFT JOIN roles r ON r.id_rol=u.id_rol
+             WHERE u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.username LIKE ? OR COALESCE(r.nombre,u.rol) LIKE ?'
         );
-        $stmt->execute([$like, $like, $like, $like]);
+        $stmt->execute([$like, $like, $like, $like, $like]);
         return (int)$stmt->fetchColumn();
     }
 

@@ -1,0 +1,16 @@
+# Seguridad si alguien apunta Apache a la raíz por error.
+Options -Indexes
+RewriteEngine On
+
+# Bloquear secretos y archivos internos.
+<FilesMatch "^(\.env|\.env\..*|docker-compose.*\.yml|Dockerfile|README.*|DOCKER.*|DEPLOY.*|SECURITY.*|composer\.(json|lock))$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(sql|bak|backup|zip|tar|gz|7z|log|ini|md)$">
+    Require all denied
+</FilesMatch>
+
+# Redirigir a public/ cuando se use XAMPP o un DocumentRoot mal configurado.
+RewriteCond %{REQUEST_URI} !/public/
+RewriteRule ^(.*)$ public/$1 [L]

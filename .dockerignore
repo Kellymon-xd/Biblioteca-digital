@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*.local
+*.zip
+node_modules
+vendor
+.DS_Store
+docker/mysql/data
+public/uploads/libros/orig/*
+public/uploads/libros/thumb/*

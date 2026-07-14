@@ -1,10 +1,11 @@
 <?php
-$tituloPagina = 'Estadísticas del Portal';
-require_once SRC_PATH . '/views/layout/header.php';;
+$tituloPagina = 'Estadísticas';
+$activePortal = 'estadisticas';
+require_once SRC_PATH . '/views/layout/header.php';
 require_once SRC_PATH . '/views/portal/_navbar.php';
 ?>
 
-<div class="container py-5">
+<div class="container py-4 portal-page">
   <?php require_once SRC_PATH . '/views/layout/flash.php'; ?>
 
   <div class="card border-0 shadow-sm mb-4">

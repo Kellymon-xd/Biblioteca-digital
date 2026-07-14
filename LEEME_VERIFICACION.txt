@@ -1,0 +1,11 @@
+Proyecto Biblioteca Digital verificado.
+
+Este ZIP NO esta vacio. Contiene la aplicacion completa con public/, controllers/, models/, views/, docker y SQL.
+
+Para XAMPP:
+1. Copia la carpeta Biblioteca_digital a htdocs.
+2. Entra a http://localhost/Biblioteca_digital/public/
+
+Para Docker/servidor:
+1. Revisa DEPLOY.md o INSTALADOR.md si existe.
+2. Configura .env segun tu entorno.

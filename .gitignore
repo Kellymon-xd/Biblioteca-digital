@@ -1,0 +1,12 @@
+.env
+.env.*.local
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
+*.zip
+*.log
+/public/uploads/libros/orig/*
+/public/uploads/libros/thumb/*
+!/public/uploads/libros/orig/.gitkeep
+!/public/uploads/libros/thumb/.gitkeep

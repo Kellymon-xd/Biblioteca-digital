@@ -6,17 +6,24 @@ class Sanitizador
 {
     public static function texto(string $valor): string
     {
-        return trim(strip_tags($valor));
+        $valor = trim(strip_tags($valor));
+        return preg_replace('/\s+/', ' ', $valor) ?? '';
     }
 
     public static function alfanumerico(string $valor): string
     {
-        return preg_replace('/[^a-zA-Z0-9_-]/', '', $valor);
+        return preg_replace('/[^a-zA-Z0-9_-]/', '', $valor) ?? '';
     }
 
     public static function entero($valor): int
     {
         return filter_var($valor, FILTER_VALIDATE_INT) ?: 0;
+    }
+
+    public static function decimal($valor): float
+    {
+        $valor = str_replace(',', '.', (string)$valor);
+        return is_numeric($valor) ? (float)$valor : 0.0;
     }
 
     public static function fecha(string $valor): string
@@ -39,19 +46,20 @@ class Sanitizador
         $datos = [];
         foreach ($reglas as $campo => $tipo) {
             $valor = $_POST[$campo] ?? '';
-
             if ($tipo === 'texto') {
-                $datos[$campo] = self::texto((string) $valor);
+                $datos[$campo] = self::texto((string)$valor);
             } elseif ($tipo === 'nombre') {
-                $datos[$campo] = self::nombrePropio((string) $valor);
+                $datos[$campo] = self::nombrePropio((string)$valor);
             } elseif ($tipo === 'email') {
-                $datos[$campo] = filter_var((string) $valor, FILTER_SANITIZE_EMAIL);
+                $datos[$campo] = filter_var((string)$valor, FILTER_SANITIZE_EMAIL);
             } elseif ($tipo === 'int') {
                 $datos[$campo] = self::entero($valor);
+            } elseif ($tipo === 'decimal') {
+                $datos[$campo] = self::decimal($valor);
             } elseif ($tipo === 'fecha') {
-                $datos[$campo] = self::fecha((string) $valor);
+                $datos[$campo] = self::fecha((string)$valor);
             } else {
-                $datos[$campo] = self::texto((string) $valor);
+                $datos[$campo] = self::texto((string)$valor);
             }
         }
         return $datos;

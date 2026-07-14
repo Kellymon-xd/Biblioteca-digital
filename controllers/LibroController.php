@@ -17,10 +17,16 @@ class LibroController
     public function index(): void
     {
         $busqueda = Sanitizador::texto($_GET['q'] ?? '');
+        $idCategoria = Sanitizador::entero($_GET['cat'] ?? 0);
+        $disponibilidad = Sanitizador::texto($_GET['disp'] ?? '');
+        if (!in_array($disponibilidad, ['', 'disponible', 'no_disponible'], true)) {
+            $disponibilidad = '';
+        }
         $pagina = max(1, Sanitizador::entero($_GET['pag'] ?? 1));
-        $libros = $this->modelo->obtenerTodos($pagina, $busqueda);
-        $total = $this->modelo->contarTotal($busqueda);
+        $libros = $this->modelo->obtenerFiltrado($pagina, $busqueda, $idCategoria, $disponibilidad);
+        $total = $this->modelo->contarFiltrado($busqueda, $idCategoria, $disponibilidad);
         $paginas = (int) ceil($total / POR_PAGINA);
+        $categorias = $this->categorias->obtenerTodosActivos();
         require_once SRC_PATH . '/views/libros/index.php';
     }
 
@@ -44,6 +50,7 @@ class LibroController
             'anio_publicacion' => 'int',
             'id_categoria' => 'int',
             'descripcion' => 'texto',
+            'costo' => 'decimal',
             'unidades_totales' => 'int',
             'activo' => 'int',
         ]);
@@ -233,7 +240,12 @@ class LibroController
     public function exportar(): void
     {
         $busqueda = Sanitizador::texto($_GET['q'] ?? '');
-        $libros = $this->modelo->obtenerTodosParaExcel($busqueda);
+        $idCategoria = Sanitizador::entero($_GET['cat'] ?? 0);
+        $disponibilidad = Sanitizador::texto($_GET['disp'] ?? '');
+        if (!in_array($disponibilidad, ['', 'disponible', 'no_disponible'], true)) {
+            $disponibilidad = '';
+        }
+        $libros = $this->modelo->obtenerTodosParaExcel($busqueda, $idCategoria, $disponibilidad);
 
         $filename = 'reporte_libros_' . date('Ymd_His') . '.csv';
         header('Content-Type: text/csv; charset=UTF-8');
@@ -244,7 +256,7 @@ class LibroController
         // UTF-8 BOM para Excel
         fwrite($out, "\xEF\xBB\xBF");
 
-        fputcsv($out, ['ISBN', 'Título', 'Autor', 'Editorial', 'Año', 'Categoría', 'Total', 'Disponibles', 'Activo']);
+        fputcsv($out, ['ISBN', 'Título', 'Autor', 'Editorial', 'Año', 'Categoría', 'Costo', 'Total', 'Disponibles', 'Disponible', 'Activo']);
         foreach ($libros as $l) {
             fputcsv($out, [
                 $l['isbn'],
@@ -253,8 +265,10 @@ class LibroController
                 $l['editorial'],
                 $l['anio_publicacion'],
                 $l['categoria'],
+                number_format((float)($l['costo'] ?? 0), 2, '.', ''),
                 $l['unidades_totales'],
                 $l['unidades_disponibles'],
+                ((int)$l['unidades_disponibles'] > 0) ? 'Disponible' : 'No disponible',
                 $l['activo'] ? 'Sí' : 'No',
             ]);
         }

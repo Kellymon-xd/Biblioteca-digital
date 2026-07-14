@@ -1,0 +1,54 @@
+services:
+  app:
+    build: .
+    container_name: biblioteca_app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_HOST: db
+      DB_PORT: 3306
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - biblioteca_uploads:/var/www/html/public/uploads
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - biblioteca_net
+
+  db:
+    image: mariadb:11
+    container_name: biblioteca_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env}
+      MARIADB_DATABASE: ${DB_NAME:-biblioteca_digital}
+      MARIADB_USER: ${DB_USER:-bib_app}
+      MARIADB_PASSWORD: ${DB_PASS:?Define DB_PASS en .env}
+      TZ: ${APP_TIMEZONE:-America/Panama}
+    volumes:
+      - biblioteca_db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - biblioteca_net
+
+volumes:
+  biblioteca_db_data:
+  biblioteca_uploads:
+
+networks:
+  biblioteca_net:
+    driver: bridge

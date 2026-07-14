@@ -1,0 +1,27 @@
+services:
+  app:
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+
+  db:
+    ports:
+      - "${DB_PORT_PUBLIC:-3307}:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: biblioteca_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "${PHPMYADMIN_PORT:-8081}:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 256M
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - biblioteca_net
