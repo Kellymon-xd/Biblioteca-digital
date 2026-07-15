@@ -1,0 +1,2852 @@
+{
+  "info": {
+    "name": "Biblioteca Digital API",
+    "description": "Colección de Postman para demostrar los endpoints del sistema Biblioteca Digital. Primero ejecuta Auth/Login para guardar el token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Ejecuta primero Auth/Login para llenar {{token}}."
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "url desde donde se despliega la api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "libroId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "reservaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "usuarioId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "profesorId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "rolId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "categoriaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "carreraId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "estudianteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "solicitudId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "login"
+                }
+              ]
+            },
+            "description": "Inicia sesión y guarda el token en variables de colección.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"root2514\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set(\"token\", json.token);",
+                  "}",
+                  "",
+                  "pm.test(\"Login correcto\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=perfil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "perfil"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "logout"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Dashboard y Logs",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "dashboard"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=logs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "logs"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Libros",
+      "item": [
+        {
+          "name": "Listar libros",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Listar libros paginado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&pag=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "pag",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar libros",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&q=calculo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "q",
+                  "value": "calculo"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Ver libro por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&id={{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "id",
+                  "value": "{{libroId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear libro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Libro creado desde API\",\n  \"autor\": \"Autor API\",\n  \"isbn\": \"API-2026-001\",\n  \"id_categoria\": 1,\n  \"costo\": 12.5,\n  \"unidades_totales\": 3,\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"libroId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Libro creado\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar libro",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&id={{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "id",
+                  "value": "{{libroId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Libro actualizado desde API\",\n  \"autor\": \"Autor API Editado\",\n  \"isbn\": \"API-2026-001\",\n  \"id_categoria\": 1,\n  \"costo\": 18.75,\n  \"unidades_totales\": 5,\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial libro",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&id={{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "id",
+                  "value": "{{libroId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Libro actualizado parcialmente\",\n  \"autor\": \"Autor API\",\n  \"id_categoria\": 1,\n  \"unidades_totales\": 4,\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar libro",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=libros&id={{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "libros"
+                },
+                {
+                  "key": "id",
+                  "value": "{{libroId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Categorias",
+      "item": [
+        {
+          "name": "Listar categorias",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "categorias"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear categoria",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "categorias"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoría API\",\n  \"descripcion\": \"Creada desde Postman\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"categoriaId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Categoría creada\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar categoria",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=categorias&id={{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "categorias"
+                },
+                {
+                  "key": "id",
+                  "value": "{{categoriaId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoría API Editada\",\n  \"descripcion\": \"Actualizada desde Postman\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial categoria",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=categorias&id={{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "categorias"
+                },
+                {
+                  "key": "id",
+                  "value": "{{categoriaId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoría API Patch\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar categoria",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=categorias&id={{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "categorias"
+                },
+                {
+                  "key": "id",
+                  "value": "{{categoriaId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Carreras",
+      "item": [
+        {
+          "name": "Listar carreras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=carreras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "carreras"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear carrera",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=carreras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "carreras"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"API\",\n  \"nombre\": \"Carrera API\",\n  \"descripcion\": \"Creada desde Postman\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"carreraId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Carrera creada\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar carrera",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=carreras&id={{carreraId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "carreras"
+                },
+                {
+                  "key": "id",
+                  "value": "{{carreraId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"API\",\n  \"nombre\": \"Carrera API Editada\",\n  \"descripcion\": \"Actualizada desde Postman\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial carrera",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=carreras&id={{carreraId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "carreras"
+                },
+                {
+                  "key": "id",
+                  "value": "{{carreraId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrera API Patch\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar carrera",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=carreras&id={{carreraId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "carreras"
+                },
+                {
+                  "key": "id",
+                  "value": "{{carreraId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Estudiantes",
+      "item": [
+        {
+          "name": "Listar estudiantes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar estudiantes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes&q=juan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                },
+                {
+                  "key": "q",
+                  "value": "juan"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Estudiantes paginado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes&pag=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                },
+                {
+                  "key": "pag",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear estudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cedula\": \"8-999-222\",\n  \"primer_nombre\": \"Estudiante\",\n  \"segundo_nombre\": \"\",\n  \"primer_apellido\": \"API\",\n  \"segundo_apellido\": \"Postman\",\n  \"fecha_nacimiento\": \"2002-01-15\",\n  \"email\": \"estudianteapi@correo.com\",\n  \"telefono\": \"6000-0000\",\n  \"id_carrera\": 1,\n  \"password\": \"Estudiante123*\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"estudianteId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Estudiante creado\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar estudiante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes&id={{estudianteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                },
+                {
+                  "key": "id",
+                  "value": "{{estudianteId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cedula\": \"8-999-222\",\n  \"primer_nombre\": \"Estudiante\",\n  \"segundo_nombre\": \"\",\n  \"primer_apellido\": \"API Editado\",\n  \"segundo_apellido\": \"Postman\",\n  \"fecha_nacimiento\": \"2002-01-15\",\n  \"email\": \"estudianteapi@correo.com\",\n  \"telefono\": \"6000-1111\",\n  \"id_carrera\": 1,\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial estudiante",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes&id={{estudianteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                },
+                {
+                  "key": "id",
+                  "value": "{{estudianteId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primer_nombre\": \"Estudiante Patch\",\n  \"primer_apellido\": \"API\",\n  \"email\": \"estudianteapi@correo.com\",\n  \"id_carrera\": 1,\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar estudiante",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=estudiantes&id={{estudianteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "estudiantes"
+                },
+                {
+                  "key": "id",
+                  "value": "{{estudianteId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Profesores",
+      "item": [
+        {
+          "name": "Listar profesores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar profesores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores&q=sistemas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                },
+                {
+                  "key": "q",
+                  "value": "sistemas"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear profesor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cip\": \"8-999-111\",\n  \"primer_nombre\": \"Carlos\",\n  \"segundo_nombre\": \"\",\n  \"primer_apellido\": \"Gomez\",\n  \"segundo_apellido\": \"\",\n  \"fecha_nacimiento\": \"1990-05-12\",\n  \"email\": \"profesorapi@correo.com\",\n  \"departamento\": \"Sistemas\",\n  \"especialidad\": \"Programación\",\n  \"password\": \"Profesor123*\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"profesorId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Profesor creado\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar profesor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores&id={{profesorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                },
+                {
+                  "key": "id",
+                  "value": "{{profesorId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cip\": \"8-999-111\",\n  \"primer_nombre\": \"Carlos\",\n  \"segundo_nombre\": \"\",\n  \"primer_apellido\": \"Gomez Editado\",\n  \"segundo_apellido\": \"\",\n  \"fecha_nacimiento\": \"1990-05-12\",\n  \"email\": \"profesorapi@correo.com\",\n  \"departamento\": \"Sistemas\",\n  \"especialidad\": \"Programación avanzada\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial profesor",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores&id={{profesorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                },
+                {
+                  "key": "id",
+                  "value": "{{profesorId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primer_nombre\": \"Carlos Patch\",\n  \"primer_apellido\": \"Gomez\",\n  \"email\": \"profesorapi@correo.com\",\n  \"departamento\": \"Sistemas\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar profesor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=profesores&id={{profesorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "profesores"
+                },
+                {
+                  "key": "id",
+                  "value": "{{profesorId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Reservas",
+      "item": [
+        {
+          "name": "Listar reservas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=reservas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "reservas"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar reservas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=reservas&q=pendiente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "reservas"
+                },
+                {
+                  "key": "q",
+                  "value": "pendiente"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Ver reserva por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=reservas&id={{reservaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "reservas"
+                },
+                {
+                  "key": "id",
+                  "value": "{{reservaId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear reserva",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=reservas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "reservas"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_estudiante\": 1,\n  \"id_libro\": 1,\n  \"fecha_devolucion_esperada\": \"2026-07-25\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"reservaId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Reserva creada\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar devolución",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=reservas&id={{reservaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "reservas"
+                },
+                {
+                  "key": "id",
+                  "value": "{{reservaId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Solicitudes",
+      "item": [
+        {
+          "name": "Listar solicitudes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=solicitudes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "solicitudes"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar solicitudes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=solicitudes&q=calculo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "solicitudes"
+                },
+                {
+                  "key": "q",
+                  "value": "calculo"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Solicitudes paginado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=solicitudes&pag=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "solicitudes"
+                },
+                {
+                  "key": "pag",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear solicitud",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=solicitudes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "solicitudes"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Libro solicitado desde API\",\n  \"autor\": \"Autor solicitado\",\n  \"motivo\": \"Material requerido para clase\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Responder solicitud",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=solicitudes&id={{solicitudId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "solicitudes"
+                },
+                {
+                  "key": "id",
+                  "value": "{{solicitudId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"APROBADA\",\n  \"observaciones\": \"Solicitud aprobada desde la API.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Usuarios Admin",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios&q=admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                },
+                {
+                  "key": "q",
+                  "value": "admin"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Ver usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios&id={{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                },
+                {
+                  "key": "id",
+                  "value": "{{usuarioId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Api\",\n  \"apellido\": \"Tester\",\n  \"email\": \"apitester@correo.com\",\n  \"username\": \"apitester\",\n  \"password\": \"ApiTester123*\",\n  \"rol\": \"operador\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"usuarioId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Usuario creado\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios&id={{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                },
+                {
+                  "key": "id",
+                  "value": "{{usuarioId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Api\",\n  \"apellido\": \"Tester Actualizado\",\n  \"email\": \"apitester@correo.com\",\n  \"username\": \"apitester\",\n  \"rol\": \"operador\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios&id={{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                },
+                {
+                  "key": "id",
+                  "value": "{{usuarioId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Api\",\n  \"apellido\": \"Tester Patch\",\n  \"email\": \"apitester@correo.com\",\n  \"username\": \"apitester\",\n  \"rol\": \"operador\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=usuarios&id={{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "usuarios"
+                },
+                {
+                  "key": "id",
+                  "value": "{{usuarioId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 Roles",
+      "item": [
+        {
+          "name": "Listar roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "roles"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "roles"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Auxiliar API\",\n  \"descripcion\": \"Rol creado desde Postman\",\n  \"modulos\": \"dashboard,libros,reservas\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set(\"rolId\", json.id);",
+                  "}",
+                  "",
+                  "pm.test(\"Rol creado\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar rol",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=roles&id={{rolId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "roles"
+                },
+                {
+                  "key": "id",
+                  "value": "{{rolId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Auxiliar API Editado\",\n  \"descripcion\": \"Rol actualizado desde Postman\",\n  \"modulos\": \"dashboard,libros,reservas,estudiantes\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial rol",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=roles&id={{rolId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "roles"
+                },
+                {
+                  "key": "id",
+                  "value": "{{rolId}}"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Auxiliar API Patch\",\n  \"activo\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Desactivar rol",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=roles&id={{rolId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "roles"
+                },
+                {
+                  "key": "id",
+                  "value": "{{rolId}}"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Configuracion",
+      "item": [
+        {
+          "name": "Ver configuracion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=configuracion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "configuracion"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Actualizar configuracion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=configuracion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "configuracion"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dias_prestamo_estudiante\": 3,\n  \"dias_prestamo_profesor\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar parcial configuracion",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/index.php?mod=api&accion=configuracion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "mod",
+                  "value": "api"
+                },
+                {
+                  "key": "accion",
+                  "value": "configuracion"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dias_prestamo_estudiante\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

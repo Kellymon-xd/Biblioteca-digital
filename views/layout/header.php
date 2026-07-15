@@ -5,7 +5,6 @@
   <link rel="icon" type="image/png" sizes="192x192" href="<?= BASE_URL ?>/assets/icons/icon-192.png?v=2">
   <link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>/assets/icons/icon-192.png?v=2">
   <link rel="apple-touch-icon" href="<?= BASE_URL ?>/assets/icons/icon-192.png?v=2">
-  <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= Sanitizador::html($tituloPagina ?? 'Biblioteca Digital') ?></title>
