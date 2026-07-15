@@ -393,8 +393,7 @@ INSERT INTO `biblioteca_digital`.`profesores` (
 
 INSERT INTO `biblioteca_digital`.`parametros` (`clave`, `valor`) VALUES
 ('dias_prestamo_estudiante', '3'),
-('dias_prestamo_profesor', '3'),
-('dias_prestamo_administrativo', '3');
+('dias_prestamo_profesor', '3');
 
 INSERT INTO `biblioteca_digital`.`libros` (
     `isbn`, `titulo`, `autor`, `editorial`, `anio_publicacion`, `id_categoria`,

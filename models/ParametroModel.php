@@ -42,7 +42,6 @@ class ParametroModel
     {
         return match (strtoupper($tipoActor)) {
             'PROFESOR' => $this->obtenerInt('dias_prestamo_profesor', DIAS_PRESTAMO_PROFESOR),
-            'ADMINISTRATIVO' => $this->obtenerInt('dias_prestamo_administrativo', DIAS_PRESTAMO_PROFESOR),
             default => $this->obtenerInt('dias_prestamo_estudiante', DIAS_PRESTAMO_ESTUDIANTE),
         };
     }

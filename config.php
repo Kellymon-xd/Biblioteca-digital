@@ -80,10 +80,6 @@ if (!defined('DIAS_PRESTAMO_PROFESOR')) {
     define('DIAS_PRESTAMO_PROFESOR', Env::int('DIAS_PRESTAMO_PROFESOR', 3));
 }
 
-if (!defined('DIAS_PRESTAMO_ADMINISTRATIVO')) {
-    define('DIAS_PRESTAMO_ADMINISTRATIVO', Env::int('DIAS_PRESTAMO_ADMINISTRATIVO', 3));
-}
-
 if (!function_exists('normalizarRol')) {
     function normalizarRol(string $rol, string $username = ''): string
     {
@@ -261,4 +257,4 @@ require_once SRC_PATH . '/controllers/UsuarioController.php';
 require_once SRC_PATH . '/controllers/LogController.php';
 require_once SRC_PATH . '/controllers/ConfiguracionController.php';
 require_once SRC_PATH . '/controllers/ApiController.php';
-require_once SRC_PATH . '/views/DashboardController.php';
+require_once SRC_PATH . '/controllers/DashboardController.php';
