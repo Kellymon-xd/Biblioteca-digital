@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config.php';
 
-$mod = Sanitizador::alfanumerico($_GET['mod'] ?? 'portal');
+$modDefault = isset($_SESSION['usuario']) ? 'dashboard' : 'portal';
+$mod = Sanitizador::alfanumerico($_GET['mod'] ?? $modDefault);
 $accion = Sanitizador::alfanumerico($_GET['accion'] ?? 'index');
 
 switch ($mod) {

@@ -2,21 +2,21 @@
   "name": "Biblioteca Digital",
   "short_name": "Biblioteca",
   "description": "Sistema de biblioteca digital para catálogo, reservas y solicitudes.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/index.php",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#0f766e",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "assets/icons/icon-192.png",
+      "src": "/assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "assets/icons/icon-512.png",
+      "src": "/assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
