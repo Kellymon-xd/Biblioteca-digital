@@ -35,7 +35,7 @@ require_once SRC_PATH . '/views/layout/header.php';
         </div>
       </div>
       <div class="text-center mt-3">
-        <a href="<?= BASE_URL ?>/index.php?mod=portal" class="text-decoration-none">Volver al catálogo público</a>
+        <a href="<?= BASE_URL ?>/index.php?mod=portal" class="text-decoration-none">Volver al página principal</a>
       </div>
     </div>
   </div>

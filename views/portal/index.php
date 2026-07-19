@@ -10,10 +10,14 @@ require_once SRC_PATH . '/views/portal/_navbar.php';
     <div class="col-lg-7">
       <span class="badge text-bg-primary mb-2">PHP MVC + MySQL + PDO</span>
       <h1 class="h2 mb-2">Biblioteca Digital</h1>
-      <p class="text-muted mb-0">
-        Consulta libros disponibles, reserva ejemplares y solicita nuevos títulos. Las bibliotecas digitales permiten acceso rápido,
-        mejor control del inventario, reportes por período y apoyo académico para estudiantes y docentes.
+      <p class="text-muted mb-3">
+        Consulta libros disponibles, reserva ejemplares y solicita nuevos títulos. Este sistema ofrece acceso rápido,
+        control de inventario, reportes, seguridad por roles y apoyo académico para estudiantes y docentes.
       </p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" href="<?= BASE_URL ?>/index.php?mod=portal&accion=acerca">Conoce el sistema</a>
+        <a class="btn btn-outline-secondary" href="<?= BASE_URL ?>/index.php?mod=portal&accion=estadisticas">Ver estadísticas</a>
+      </div>
     </div>
     <div class="col-lg-5">
       <form class="row g-2 portal-search-card" method="GET" action="<?= BASE_URL ?>/index.php">
@@ -83,9 +87,9 @@ require_once SRC_PATH . '/views/portal/_navbar.php';
   </section>
 
   <section class="row g-3 mt-4">
-    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Stack del sistema</h2><p class="small text-muted mb-0">PHP 8, MVC, PDO, MySQL/MariaDB, Bootstrap, CSRF, HMAC, validación y sanitización centralizada.</p></div></div>
-    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Importancia</h2><p class="small text-muted mb-0">Facilita reservas, control de stock, estadísticas de uso y solicitudes de adquisición o préstamo interbibliotecario.</p></div></div>
-    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Contáctenos</h2><p class="small text-muted mb-0">biblioteca@institucion.edu.pa<br>Tel. 0000-0000<br>Horario: lunes a viernes.</p></div></div>
+    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Stack del sistema</h2><p class="small text-muted mb-0">PHP 8, MVC, PDO, MySQL/MariaDB, CSRF, HMAC, validación, sanitización y API para Postman.</p></div></div>
+    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Fortalezas</h2><p class="small text-muted mb-0">Facilita reservas, control de stock, estadísticas de uso, solicitudes y administración por roles.</p></div></div>
+    <div class="col-md-4"><div class="p-3 bg-white border rounded-2 h-100"><h2 class="h6">Desarrolladores</h2><p class="small text-muted mb-0">Kelly Beitia, Eric De Leon y Victor Rivas.<br><a href="<?= BASE_URL ?>/index.php?mod=portal&accion=acerca">Ver página pública del sistema</a></p></div></div>
   </section>
 </main>
 <?php require_once SRC_PATH . '/views/layout/footer.php'; ?>

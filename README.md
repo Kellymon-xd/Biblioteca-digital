@@ -57,6 +57,22 @@ DB_PORT=3306
 | Estudiante | `user@correo.com` o `8-888-888` | `User123*` | Portal público |
 | Docente | `docente@correo.com` o `9-999-999` | `Docente1*` | Portal público |
 
+## Página pública del sistema
+
+Además del catálogo público, el proyecto incluye una página promocional/informativa donde se presentan las bondades del sistema, sus fortalezas, las razones para utilizarlo y los desarrolladores del proyecto.
+
+Ruta:
+
+```txt
+/index.php?mod=portal&accion=acerca
+```
+
+Desarrolladores:
+
+- Kelly Beitia
+- Eric De Leon
+- Victor Rivas
+
 ## Módulos implementados
 
 - Login administrativo con CSRF, bitácora de IP, fecha, navegador y control de errores.
@@ -73,7 +89,7 @@ DB_PORT=3306
 - Reporte administrativo de reservas filtrado por fechas, con días reservados y tipo de lector, exportable a CSV compatible con Excel.
 - Solicitudes de libros no existentes o no disponibles, con materia, motivo e interbibliotecario.
 - Estadísticas de libros más usados por período.
-- Página pública con stack del sistema, contáctenos e importancia de bibliotecas digitales.
+- Página pública con catálogo, bondades del sistema, fortalezas, contáctenos y desarrolladores.
 - Conexión centralizada mediante clase `Conexion` y PDO.
 - Sanitización, validación, CSRF, HMAC y auditoría de firmas.
 - Contratos por interfaz para servicios de transformación de datos: hashing de contraseñas y firma digital.
@@ -81,6 +97,7 @@ DB_PORT=3306
 ## Archivos clave
 
 - Configuración general: `config.php`
+- Página pública de bondades/fortalezas: `views/portal/acerca.php`
 - Variables de entorno: `.env`, `.env.example`, `utilidades/Env.php`
 - Conexión PDO: `conexion/Conexion.php`
 - Script SQL completo: `conexion/biblioteca_digital.sql`

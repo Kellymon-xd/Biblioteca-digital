@@ -121,6 +121,11 @@ class PortalController
         require_once SRC_PATH . '/views/portal/index.php';
     }
 
+    public function acerca(): void
+    {
+        require_once SRC_PATH . '/views/portal/acerca.php';
+    }
+
     public function logout(): void
     {
         if (!empty($_SESSION['lector'])) {

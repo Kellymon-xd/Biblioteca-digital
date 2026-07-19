@@ -6,40 +6,43 @@
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav"
-            aria-controls="portalNav" aria-expanded="false" aria-label="Abrir menú">
+      aria-controls="portalNav" aria-expanded="false" aria-label="Abrir menú">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="portalNav">
       <div class="portal-nav-actions">
-        <a class="btn btn-outline-primary btn-sm <?= ($activePortal ?? '') === 'catalogo' ? 'active' : '' ?>"
-           href="<?= BASE_URL ?>/index.php?mod=portal">
+        <a class="btn btn-outline-secondary btn-sm <?= ($activePortal ?? '') === 'catalogo' ? 'active' : '' ?>"
+          href="<?= BASE_URL ?>/index.php?mod=portal&accion=index">
           Catálogo
         </a>
 
         <a class="btn btn-outline-secondary btn-sm <?= ($activePortal ?? '') === 'estadisticas' ? 'active' : '' ?>"
-           href="<?= BASE_URL ?>/index.php?mod=portal&accion=estadisticas">
+          href="<?= BASE_URL ?>/index.php?mod=portal&accion=estadisticas">
           Estadísticas
+        </a>
+
+        <a class="btn btn-outline-secondary btn-sm <?= ($activePortal ?? '') === 'acerca' ? 'active' : '' ?>"
+          href="<?= BASE_URL ?>/index.php?mod=portal&accion=acerca">
+          El sistema
         </a>
 
         <?php if (!empty($_SESSION['lector'])): ?>
           <a class="btn btn-outline-primary btn-sm <?= ($activePortal ?? '') === 'reservas' ? 'active' : '' ?>"
-             href="<?= BASE_URL ?>/index.php?mod=reservas">
+            href="<?= BASE_URL ?>/index.php?mod=reservas">
             Mis reservas
           </a>
 
           <a class="btn btn-outline-secondary btn-sm <?= ($activePortal ?? '') === 'solicitar' ? 'active' : '' ?>"
-             href="<?= BASE_URL ?>/index.php?mod=solicitudes&accion=mis">
+            href="<?= BASE_URL ?>/index.php?mod=solicitudes&accion=mis">
             Solicitar libro
           </a>
         <?php else: ?>
-          <a class="btn btn-primary btn-sm"
-             href="<?= BASE_URL ?>/index.php?mod=portal&accion=login">
+          <a class="btn btn-primary btn-sm" href="<?= BASE_URL ?>/index.php?mod=portal&accion=login">
             Iniciar sesión
           </a>
 
-          <a class="btn btn-outline-dark btn-sm"
-             href="<?= BASE_URL ?>/index.php?mod=auth&accion=login">
+          <a class="btn btn-outline-dark btn-sm" href="<?= BASE_URL ?>/index.php?mod=auth&accion=login">
             Administración
           </a>
         <?php endif; ?>
@@ -58,8 +61,7 @@
             </span>
           </span>
 
-          <a class="btn btn-outline-secondary btn-sm"
-             href="<?= BASE_URL ?>/index.php?mod=portal&accion=logout">
+          <a class="btn btn-outline-secondary btn-sm" href="<?= BASE_URL ?>/index.php?mod=portal&accion=logout">
             Salir
           </a>
         </div>
